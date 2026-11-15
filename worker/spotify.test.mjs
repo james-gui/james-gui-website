@@ -9,6 +9,19 @@ const track = { id: '7rXke3ttpL2uXel9Nesf4u', name: 'a song', artists: [{ name: 
 setAssets({
   '/music-fallback.json': { body: Buffer.from(JSON.stringify({ mode: 'recent', items: [], updatedAt: null })).toString('base64') },
   '/good-things.html': { body: readFileSync(new URL('../public/good-things.html', import.meta.url)).toString('base64') },
+  '/styles.css': { type: 'text/css; charset=utf-8', body: Buffer.from('.recognition-event { display: block; }').toString('base64'), version: 'current-style-version' },
+});
+
+test('only matching versioned stylesheets stay cached across deployments', async () => {
+  for (const path of ['/styles.css', '/styles.css?v=old-style-version']) {
+    const response = await handleRequest(req(path), {});
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('Cache-Control'), 'no-cache');
+  }
+  const current = await handleRequest(req('/styles.css?v=current-style-version'), {});
+  assert.equal(current.status, 200);
+  assert.equal(current.headers.get('Cache-Control'), 'public, max-age=31536000, immutable');
+  assert.equal(await current.text(), '.recognition-event { display: block; }');
 });
 
 class Store {

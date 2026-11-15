@@ -186,12 +186,15 @@ async function setup(request, env) {
 }
 
 function staticResponse(request) {
-  const path = new URL(request.url).pathname;
+  const url = new URL(request.url);
+  const path = url.pathname;
   const entry = assets[path === '/' ? '/index.html' : path];
   if (!entry) return new Response('page not found', { status: 404 });
+  const versioned = entry.version && url.searchParams.get('v') === entry.version;
+  const mutable = /^(text\/(html|css|javascript)|application\/json)/.test(entry.type);
   return new Response(request.method === 'HEAD' ? null : unbase64(entry.body), { headers: {
     'Content-Type': entry.type, 'X-Content-Type-Options': 'nosniff',
-    'Cache-Control': entry.type.startsWith('text/html') ? 'no-cache' : 'public, max-age=3600',
+    'Cache-Control': versioned ? 'public, max-age=31536000, immutable' : mutable ? 'no-cache' : 'public, max-age=3600',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
   } });
 }
