@@ -1,0 +1,20 @@
+/* Original warm palette. Load after styles.css to restore these colors. */
+:root {
+  --paper: #f7f4ee;
+  --ink: #29251f;
+  --muted: #746e64;
+  --line: #e2dcd1;
+  --accent: #94452f;
+  --wash: #eee2d8;
+  --selection: #dfc4b1;
+  --nav-ink: #797266;
+  --nav-hover: #f0eae0;
+  --nav-active-border: #ac7761;
+  --subtle: #b1a797;
+  --underline: #b88870;
+  --bracket: #aa9c8b;
+  --status: #899071;
+  --marker: #b7a38e;
+  --arrow: #9b8c7a;
+  --pin: #a19584;
+}

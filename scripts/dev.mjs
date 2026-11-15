@@ -4,7 +4,7 @@ import { extname, resolve } from 'node:path';
 import worker, { setAssets } from '../worker/index.js';
 
 const root = resolve(import.meta.dirname, '../public');
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2' };
 async function collect(dir = root, prefix = '') {
   const assets = {};
   for (const item of await readdir(dir, { withFileTypes: true })) {

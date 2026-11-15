@@ -19,6 +19,14 @@ Run `npm run dev` and open http://127.0.0.1:4173. The local preview shows the sa
 
 Run `npm test` for the Spotify authorization and token lifecycle checks. `npm run build` packages the front end and backend into `dist/server/index.js`. The build uses the existing Sites project in `.openai/hosting.json`; the generated `dist/` directory is not editable source.
 
+## Palette and logo
+
+The active palette uses cool white, navy, and cobalt blue, inspired by https://haeinjung.com/. Colors are centralized in the `:root` custom properties in `public/styles.css`.
+
+The original warm palette is saved in `design/palettes/warm.css`. Its declarations can replace the active color declarations without reverting later content or layout changes; also restore the HTML `theme-color` to `#f7f4ee`. The original monogram favicon is saved beside it. The complete previous design is preserved in commit `f4bc86d2a62615f829b6251e2745bc9a2d24779c`.
+
+`public/assets/james-avatar.png` is the supplied image, used unchanged for the sidebar home link, favicon, and touch icon.
+
 ## Connect Spotify
 
 Open https://james-gui-personal.pluckywren39.chatgpt.site/spotify/setup while signed in as the Site owner. The setup page is owner-only.
@@ -51,4 +59,4 @@ Content comes from jamesgui.com and its public data files and recent-listens end
 
 Inter is self-hosted under the SIL Open Font License in `public/assets/OFL.txt`. Icons are original SVGs. Earlier `work.html`, `pins.html`, and `contact.html` URLs redirect to the current pages.
 
-Authorization, token refresh, encryption, cache fallback, lowercase copy, internal navigation, and the production artifact have local automated checks. Visual browser QA is unavailable in this environment. Real Spotify account verification requires the owner to finish the connection above.
+Authorization, token refresh, encryption, cache fallback, lowercase copy, internal navigation, and the production artifact have local automated checks. Layouts are visually checked using an isolated local browser preview at desktop and phone widths. Real Spotify account verification requires the owner to finish the connection above.
