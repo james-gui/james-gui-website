@@ -15,6 +15,61 @@ if (clocks.length) {
   setInterval(updateClock, 60_000);
 }
 
+const portraitToggle = document.querySelector('[data-portrait-toggle]');
+const portraitPanel = document.querySelector('#home-portrait');
+if (portraitToggle && portraitPanel) {
+  const photo = portraitPanel.querySelector('[data-portrait-image]');
+  const close = portraitPanel.querySelector('[data-portrait-close]');
+  const error = portraitPanel.querySelector('[data-portrait-error]');
+  let requested = false;
+  let fallback = false;
+  portraitToggle.setAttribute('role', 'button');
+  portraitToggle.setAttribute('aria-expanded', 'false');
+
+  photo.addEventListener('load', () => photo.classList.add('is-loaded'));
+  photo.addEventListener('error', () => {
+    if (!fallback && photo.getAttribute('src') !== photo.dataset.fallback) {
+      fallback = true;
+      photo.removeAttribute('srcset');
+      photo.src = photo.dataset.fallback;
+    } else {
+      error.hidden = false;
+    }
+  });
+
+  const setPortrait = (open) => {
+    if (open && !requested) {
+      requested = true;
+      if (photo.dataset.sizes) photo.sizes = photo.dataset.sizes;
+      if (photo.dataset.srcset) photo.srcset = photo.dataset.srcset;
+      photo.src = photo.dataset.src;
+    }
+    if (!open && portraitPanel.contains(document.activeElement)) portraitToggle.focus({ preventScroll: true });
+    portraitToggle.setAttribute('aria-expanded', String(open));
+    portraitToggle.title = open ? 'hide photo' : 'show a photo of james';
+    portraitPanel.inert = !open;
+    portraitPanel.setAttribute('aria-hidden', String(!open));
+    portraitPanel.classList.toggle('is-open', open);
+  };
+  portraitToggle.addEventListener('click', (event) => {
+    event.preventDefault();
+    setPortrait(portraitToggle.getAttribute('aria-expanded') !== 'true');
+  });
+  portraitToggle.addEventListener('keydown', (event) => {
+    if (event.key === ' ') {
+      event.preventDefault();
+      if (!event.repeat) portraitToggle.click();
+    }
+  });
+  close.addEventListener('click', () => setPortrait(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && portraitToggle.getAttribute('aria-expanded') === 'true') {
+      setPortrait(false);
+      portraitToggle.focus({ preventScroll: true });
+    }
+  });
+}
+
 const cityButtons = document.querySelectorAll('[data-city]');
 const cityLists = document.querySelectorAll('[data-city-list]');
 if (cityButtons.length) {

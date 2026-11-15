@@ -12,7 +12,7 @@ The editable front end lives in `public/`:
 - `good-things.html` — restaurants and Spotify music
 - `say-hello.html` — email and social links
 - `styles.css` — shared typography, colors, and responsive layouts
-- `site.js` — city switcher, clock, copy email, and Spotify grid updates
+- `site.js` — homepage portrait, city switcher, clock, copy email, and Spotify grid updates
 - `music-fallback.json` — saved recent listens shown before Spotify is connected
 
 Run `npm run dev` and open http://127.0.0.1:4173. The local preview shows the saved music and does not access production credentials. No dependency installation is needed.
@@ -37,7 +37,7 @@ The canonical website is `https://jamesgui.com/`. Each main page has its own tit
 
 `codexprophet.html` and `worldfork.html` provide linked project details, attribution, primary sources, and visible breadcrumbs. Their `TechArticle` and `BreadcrumbList` markup describes the visible content. Project claims follow the team’s Prophet Arena write-up, WorldFork site, Devpost submission, and linked OpenReview paper. Keep the Hacktech result scoped to the Listen Labs track.
 
-Vercel builds use the native Image Optimization API for the 36px sidebar avatar. Only the local avatar path is allowed, with fixed widths and quality. The source image hash versions the optimization URL. The supplied original stays unchanged for social previews and Sites/local builds; the sidebar falls back to it if the image service fails.
+Vercel builds use the native Image Optimization API for the sidebar avatar and homepage portrait. Only those two local image paths are allowed, with fixed widths and quality. Source image hashes version the optimization URLs. Displayed images fall back to the local files if the image service fails; social previews and Sites/local builds use the local files directly.
 
 Search and browser icons use stable static URLs: `/favicon.png` (96×96 PNG), `/favicon.ico` (the same PNG in an ICO container), and `/apple-touch-icon.png` (180×180 PNG). These are small derivatives of the supplied avatar. Keep their URLs stable and serve them as PNG/ICO, rather than content-negotiated WebP, so Google can fetch a supported search favicon. Google must recrawl and process the homepage before its search icon updates.
 
@@ -50,6 +50,8 @@ The active palette uses cool white, navy, and cobalt blue, inspired by https://h
 The original warm palette is saved in `design/palettes/warm.css`. Its declarations can replace the active color declarations without reverting later content or layout changes; also restore the HTML `theme-color` to `#f7f4ee`. The original monogram favicon is saved beside it. The complete previous design is preserved in commit `f4bc86d2a62615f829b6251e2745bc9a2d24779c`.
 
 `public/assets/james-avatar.png` is the supplied original image. The sidebar and icon derivatives preserve its design.
+
+The homepage name and thumbnail reveal `public/assets/james-portrait.jpg` above the bio. The photo expands inline, supports Enter/Space and Escape, and respects reduced-motion settings. Vercel serves a small thumbnail immediately and requests the responsive larger image only when opened. The portrait preserves the supplied JPEG pixels and orientation, with camera and location metadata removed; CSS controls its framing.
 
 ## Connect Spotify
 
