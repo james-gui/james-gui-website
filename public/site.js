@@ -44,6 +44,8 @@ if (copyButton && navigator.clipboard?.writeText) {
 
 const musicGrid = document.querySelector('[data-music-grid]');
 if (musicGrid) {
+  const musicSection = musicGrid.closest('.spotify-section');
+  musicGrid.setAttribute('aria-busy', 'true');
   const renderTrack = (track, index, ranked) => {
     if (!/^[A-Za-z0-9]{22}$/.test(track.id || '')) return null;
     const card = document.createElement('li');
@@ -81,7 +83,7 @@ if (musicGrid) {
   fetch('/api/spotify/top', { signal: AbortSignal.timeout(15000) })
     .then((response) => { if (!response.ok) throw new Error('music unavailable'); return response.json(); })
     .then((data) => {
-      if (!Array.isArray(data.items)) return;
+      if (!Array.isArray(data.items) || !['top', 'recent'].includes(data.mode)) throw new Error('music unavailable');
       const ranked = data.mode === 'top';
       const cards = data.items.slice(0, 12).map((track, i) => renderTrack(track, i, ranked)).filter(Boolean);
       if (cards.length) musicGrid.replaceChildren(...cards);
@@ -105,6 +107,11 @@ if (musicGrid) {
       document.querySelector('[data-music-status]').textContent = ranked ? 'spotify top tracks loaded.' : 'recent spotify tracks loaded.';
     })
     .catch(() => {
+      document.querySelector('[data-music-note]').textContent = 'spotify is temporarily unavailable. showing saved recent listens.';
       document.querySelector('[data-music-status]').textContent = 'showing saved music while spotify is unavailable.';
+    })
+    .finally(() => {
+      musicGrid.removeAttribute('aria-busy');
+      musicSection.classList.remove('music-pending');
     });
 }

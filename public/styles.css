@@ -166,6 +166,12 @@ p { margin: 0 0 21px; }
 .spotify-section .section-heading { gap: 8px 16px; margin-bottom: 10px; }
 .music-updated { color: var(--muted); font-size: 12px; line-height: 1.5; }
 .music-intro { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 24px; }
+.music-loading { display: none; }
+.music-pending .music-loading { display: block; }
+.music-pending [data-music-description] { display: none; }
+.music-pending [data-music-period], .music-pending [data-music-note], .music-pending [data-music-grid] { visibility: hidden; }
+.music-pending .song-card { position: relative; }
+.music-pending .song-card::before { content: ''; position: absolute; inset: 0 0 auto; aspect-ratio: 1; background: var(--line); visibility: visible; pointer-events: none; }
 .song-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 16px; list-style: none; padding: 0; margin: 0; }
 .song-card { min-width: 0; }
 .song-card > a { display: block; text-decoration: none; }
