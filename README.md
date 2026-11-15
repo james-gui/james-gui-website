@@ -29,6 +29,14 @@ The Vercel `/api/spotify/top` function uses the Spotify account already configur
 
 Vercel uses the existing sensitive Production variables `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN`. The refresh token needs Spotify's `user-top-read` permission. Never put credentials in client code, Git, or build output. Preview deployments without these variables show the saved song list. An upstream outage uses cached top tracks when available, or the saved songs already on the page.
 
+## Search and sharing
+
+The canonical website is `https://jamesgui.com/`. Each main page has its own title, description, canonical URL, Open Graph tags, X card tags, and JSON-LD. The homepage identifies James with `ProfilePage`, `Person`, and `WebSite` data based on the visible bio and public profile links. Social previews use the supplied avatar.
+
+`public/sitemap.xml` lists the five canonical pages; `public/robots.txt` advertises it. Update the sitemap when adding or removing pages. Vercel permanently redirects the www hostname, `/index.html`, and the three legacy page URLs. API responses carry `X-Robots-Tag: noindex`.
+
+Google Search Console can use `https://jamesgui.com/sitemap.xml` after ownership verification. Its reports show indexing and search queries; Vercel Analytics shows visits. Search Console verification and sitemap submission are separate from deploying these files.
+
 ## Palette and logo
 
 The active palette uses cool white, navy, and cobalt blue, inspired by https://haeinjung.com/. Colors are centralized in the `:root` custom properties in `public/styles.css`.

@@ -3,10 +3,26 @@
   "framework": null,
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist/static",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.jamesgui.com" }],
+      "destination": "https://jamesgui.com/:path*",
+      "permanent": true
+    },
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/work.html", "destination": "/projects.html", "permanent": true },
+    { "source": "/pins.html", "destination": "/good-things.html", "permanent": true },
+    { "source": "/contact.html", "destination": "/say-hello.html", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
     }
   ]
 }
