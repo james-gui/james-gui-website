@@ -33,7 +33,11 @@ Vercel uses the existing sensitive Production variables `SPOTIFY_CLIENT_ID`, `SP
 
 The canonical website is `https://jamesgui.com/`. Each main page has its own title, description, canonical URL, Open Graph tags, X card tags, and JSON-LD. The homepage identifies James with `ProfilePage`, `Person`, and `WebSite` data based on the visible bio and public profile links. Social previews use the supplied avatar.
 
-`public/sitemap.xml` lists the five canonical pages; `public/robots.txt` advertises it. Update the sitemap when adding or removing pages. Vercel permanently redirects the www hostname, `/index.html`, and the three legacy page URLs. API responses carry `X-Robots-Tag: noindex`.
+`public/sitemap.xml` lists the five main pages and two project detail pages; `public/robots.txt` advertises it. Update the sitemap when adding or removing pages. Vercel permanently redirects the www hostname, `/index.html`, and the three legacy page URLs. API responses carry `X-Robots-Tag: noindex`.
+
+`codexprophet.html` and `worldfork.html` provide linked project details, attribution, primary sources, and visible breadcrumbs. Their `TechArticle` and `BreadcrumbList` markup describes the visible content. Project claims follow the team’s Prophet Arena write-up, WorldFork site, Devpost submission, and linked OpenReview paper. Keep the Hacktech result scoped to the Listen Labs track.
+
+Vercel builds use the native Image Optimization API for the 36px sidebar avatar, favicon, and touch icon. Only the local avatar path is allowed, with fixed widths and quality. The source image hash versions the optimization URL. The supplied original stays unchanged for social previews and Sites/local builds; the sidebar falls back to it if the image service fails.
 
 Google Search Console can use `https://jamesgui.com/sitemap.xml` after ownership verification. Its reports show indexing and search queries; Vercel Analytics shows visits. Search Console verification and sitemap submission are separate from deploying these files.
 
