@@ -19,6 +19,16 @@ Run `npm run dev` and open http://127.0.0.1:4173. The local preview shows the sa
 
 Run `npm test` for the Spotify authorization and token lifecycle checks. `npm run build` packages the front end and backend into `dist/server/index.js`. The build uses the existing Sites project in `.openai/hosting.json`; the generated `dist/` directory is not editable source.
 
+## Vercel deployment
+
+The Vercel project is `webssss` in `james-guis-projects-cb7cf3f2`, connected to `james-gui/james-gui-website`. Pushes to `main` deploy production automatically.
+
+`vercel.json` selects `npm run build:vercel` and the generated `dist/static` directory. This build copies the public pages, versions the shared CSS/JS, and adds Vercel Web Analytics. The original `npm run build` still packages the Sites Worker. Web Analytics is enabled; view traffic in the project's Analytics tab.
+
+The Vercel `/api/spotify/top` function uses the Spotify account already configured in that project. It requests the top 12 tracks over the last four weeks and caches them for an hour on warm function instances, with five minutes of CDN caching. The Sites backend remains independent.
+
+Vercel uses the existing sensitive Production variables `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and `SPOTIFY_REFRESH_TOKEN`. The refresh token needs Spotify's `user-top-read` permission. Never put credentials in client code, Git, or build output. Preview deployments without these variables show the saved song list. An upstream outage uses cached top tracks when available, or the saved songs already on the page.
+
 ## Palette and logo
 
 The active palette uses cool white, navy, and cobalt blue, inspired by https://haeinjung.com/. Colors are centralized in the `:root` custom properties in `public/styles.css`.
@@ -59,4 +69,4 @@ Content comes from jamesgui.com and its public data files and recent-listens end
 
 Inter is self-hosted under the SIL Open Font License in `public/assets/OFL.txt`. Icons are original SVGs. Earlier `work.html`, `pins.html`, and `contact.html` URLs redirect to the current pages.
 
-Authorization, token refresh, encryption, cache fallback, lowercase copy, internal navigation, and the production artifact have local automated checks. Layouts are visually checked using an isolated local browser preview at desktop and phone widths. Real Spotify account verification requires the owner to finish the connection above.
+Authorization, token refresh, encryption, cache fallback, lowercase copy, internal navigation, and the production artifact have local automated checks. Layouts are visually checked using an isolated browser preview at desktop and phone widths. Both hosted Spotify connections returned 12 top tracks during verification on November 15, 2026.
