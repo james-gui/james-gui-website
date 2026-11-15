@@ -1,13 +1,15 @@
 // Keep these enhancements optional: every page and link works without JavaScript.
-const clock = document.querySelector('[data-la-time]');
-if (clock) {
+const clocks = document.querySelectorAll('[data-la-time]');
+if (clocks.length) {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit', hour12: true,
   });
   const updateClock = () => {
     const now = new Date();
-    clock.textContent = formatter.format(now).toLowerCase();
-    clock.dateTime = now.toISOString();
+    clocks.forEach((clock) => {
+      clock.textContent = formatter.format(now).toLowerCase();
+      clock.dateTime = now.toISOString();
+    });
   };
   updateClock();
   setInterval(updateClock, 60_000);
