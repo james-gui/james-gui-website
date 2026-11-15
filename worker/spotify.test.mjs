@@ -1,11 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { handleRequest, setAssets } from './index.js';
 
 const origin = 'https://example.chatgpt.site';
 const ownerHeaders = { 'oai-authenticated-user-id': 'site-owner-123', 'oai-authenticated-user-email': 'owner@example.com' };
 const track = { id: '7rXke3ttpL2uXel9Nesf4u', name: 'a song', artists: [{ name: 'an artist' }], album: { name: 'an album', images: [{ width: 300, url: 'https://i.scdn.co/image/test' }] } };
-setAssets({ '/music-fallback.json': { body: Buffer.from(JSON.stringify({ mode: 'recent', items: [], updatedAt: null })).toString('base64') } });
+setAssets({
+  '/music-fallback.json': { body: Buffer.from(JSON.stringify({ mode: 'recent', items: [], updatedAt: null })).toString('base64') },
+  '/good-things.html': { body: readFileSync(new URL('../public/good-things.html', import.meta.url)).toString('base64') },
+});
 
 class Store {
   values = new Map();
@@ -38,11 +42,32 @@ async function authorize(config, options = {}) {
 
 test('only the owner may connect and cross-origin POSTs are rejected', async () => {
   const config = env();
-  for (const headers of [{}, { ...ownerHeaders, Origin: 'https://attacker.example' }, { ...ownerHeaders, 'oai-authenticated-user-email': 'viewer@example.com', Origin: origin }]) {
+  for (const headers of [{}, ownerHeaders, { ...ownerHeaders, Origin: 'null' }, { ...ownerHeaders, Origin: 'https://attacker.example' }, { ...ownerHeaders, 'oai-authenticated-user-email': 'viewer@example.com', Origin: origin }]) {
     const response = await handleRequest(req('/api/spotify/connect', { method: 'POST', headers }), config);
     assert.equal(response.status, 403);
   }
   assert.equal(config.SPOTIFY_STORE.values.size, 0);
+});
+
+test('setup preserves the native form POST origin without disclosing off-site referrers', async () => {
+  const config = env();
+  const setup = await handleRequest(req('/spotify/setup', { headers: ownerHeaders }), config);
+  assert.equal(setup.status, 200);
+  assert.equal(setup.headers.get('Referrer-Policy'), 'same-origin');
+  assert.equal(setup.headers.get('Cache-Control'), 'no-store');
+  const html = await setup.text();
+  assert.match(html, /<form method="post" action="\/api\/spotify\/connect">/);
+  assert.doesNotMatch(html, /<meta[^>]+name=["']referrer["'][^>]+no-referrer/i);
+  const connected = await handleRequest(req('/api/spotify/connect', { method: 'POST', headers: {
+    ...ownerHeaders, Origin: origin, Referer: origin + '/spotify/setup',
+    'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'navigate',
+    'Content-Type': 'application/x-www-form-urlencoded',
+  } }), config);
+  assert.equal(connected.status, 303);
+  assert.equal(new URL(connected.headers.get('Location')).origin, 'https://accounts.spotify.com');
+  // OAuth redirects still suppress referrers, including callback query data.
+  assert.equal(connected.headers.get('Referrer-Policy'), 'no-referrer');
+  assert.match(connected.headers.get('Set-Cookie'), /HttpOnly; Secure; SameSite=Lax/);
 });
 
 test('OAuth uses PKCE and only the top-tracks scope', async () => {

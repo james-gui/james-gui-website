@@ -179,7 +179,10 @@ async function setup(request, env) {
   let template = decoder.decode(unbase64(assets['/good-things.html'].body));
   template = template.replace(/<main id="main" tabindex="-1">[\s\S]*?<\/main>/, `<main id="main" tabindex="-1">${content}</main>`);
   template = template.replace('<head>', '<head><base href="/">').replace(/<title>.*?<\/title>/, '<title>connect spotify — james gui</title>');
-  return new Response(template, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff' } });
+  // Native form POSTs inherit this policy. `no-referrer` makes Firefox send
+  // Origin: null, which correctly fails the connect route's CSRF check.
+  // Keep same-site form origins while suppressing referrers to other sites.
+  return new Response(template, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Referrer-Policy': 'same-origin', 'X-Content-Type-Options': 'nosniff' } });
 }
 
 function staticResponse(request) {
