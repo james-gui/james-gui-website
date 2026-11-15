@@ -25,10 +25,7 @@ for (const name of await readdir(output)) {
   for (const [asset, version] of Object.entries(versions)) {
     html = html.replaceAll(`"${asset}"`, `"${asset}?v=${version}"`);
   }
-  // Use Vercel's native image service for UI-sized copies of the supplied logo.
-  // The original stays available for social cards and the independent Sites build.
-  html = html.replace('<link rel="icon" href="assets/james-avatar.png" type="image/png">', `<link rel="icon" href="${avatarUrl(96)}" sizes="96x96">`);
-  html = html.replace('<link rel="apple-touch-icon" href="assets/james-avatar.png">', `<link rel="apple-touch-icon" href="${avatarUrl(180)}" sizes="180x180">`);
+  // Optimize only the sidebar. Search favicons stay on stable PNG/ICO URLs.
   html = html.replace('<img src="assets/james-avatar.png" alt="" width="36" height="36">', `<img src="${avatarUrl(72)}" srcset="${avatarUrl(72)} 2x, ${avatarUrl(108)} 3x" alt="" width="36" height="36" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='/assets/james-avatar.png'">`);
   html = html.replace('</head>', `${analytics}\n</head>`);
   await writeFile(path, html);

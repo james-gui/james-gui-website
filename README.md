@@ -37,7 +37,9 @@ The canonical website is `https://jamesgui.com/`. Each main page has its own tit
 
 `codexprophet.html` and `worldfork.html` provide linked project details, attribution, primary sources, and visible breadcrumbs. Their `TechArticle` and `BreadcrumbList` markup describes the visible content. Project claims follow the team’s Prophet Arena write-up, WorldFork site, Devpost submission, and linked OpenReview paper. Keep the Hacktech result scoped to the Listen Labs track.
 
-Vercel builds use the native Image Optimization API for the 36px sidebar avatar, favicon, and touch icon. Only the local avatar path is allowed, with fixed widths and quality. The source image hash versions the optimization URL. The supplied original stays unchanged for social previews and Sites/local builds; the sidebar falls back to it if the image service fails.
+Vercel builds use the native Image Optimization API for the 36px sidebar avatar. Only the local avatar path is allowed, with fixed widths and quality. The source image hash versions the optimization URL. The supplied original stays unchanged for social previews and Sites/local builds; the sidebar falls back to it if the image service fails.
+
+Search and browser icons use stable static URLs: `/favicon.png` (96×96 PNG), `/favicon.ico` (the same PNG in an ICO container), and `/apple-touch-icon.png` (180×180 PNG). These are small derivatives of the supplied avatar. Keep their URLs stable and serve them as PNG/ICO, rather than content-negotiated WebP, so Google can fetch a supported search favicon. Google must recrawl and process the homepage before its search icon updates.
 
 Google Search Console can use `https://jamesgui.com/sitemap.xml` after ownership verification. Its reports show indexing and search queries; Vercel Analytics shows visits. Search Console verification and sitemap submission are separate from deploying these files.
 
@@ -47,7 +49,7 @@ The active palette uses cool white, navy, and cobalt blue, inspired by https://h
 
 The original warm palette is saved in `design/palettes/warm.css`. Its declarations can replace the active color declarations without reverting later content or layout changes; also restore the HTML `theme-color` to `#f7f4ee`. The original monogram favicon is saved beside it. The complete previous design is preserved in commit `f4bc86d2a62615f829b6251e2745bc9a2d24779c`.
 
-`public/assets/james-avatar.png` is the supplied image, used unchanged for the sidebar home link, favicon, and touch icon.
+`public/assets/james-avatar.png` is the supplied original image. The sidebar and icon derivatives preserve its design.
 
 ## Connect Spotify
 
