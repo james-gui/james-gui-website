@@ -51,6 +51,7 @@ if (musicGrid) {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.setAttribute('aria-label', `${track.title} — listen on spotify`.toLowerCase());
+    link.title = `${track.title} — ${track.artist || ''}`.toLowerCase();
     const art = document.createElement('span');
     art.className = 'song-artwork';
     if (track.image?.startsWith('https://i.scdn.co/')) {
