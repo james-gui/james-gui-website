@@ -69,8 +69,11 @@ p { margin: 0 0 21px; }
 .location::before { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: #899071; }
 .footer-name { text-decoration: none; }
 .intro { color: var(--muted); margin-bottom: 35px; }
-.home-recognition { margin: 24px 0 0; }
-.home-recognition + .social-links { margin-top: 12px; }
+.home-achievements { margin: 28px 0; }
+.home-achievements h2 { margin-bottom: 12px; color: var(--ink); }
+.home-achievements ul { margin: 0; padding-left: 20px; }
+.home-achievements li + li { margin-top: 6px; }
+.home-achievements li::marker { color: #b7a38e; }
 .recognition { margin-bottom: 40px; scroll-margin-top: 32px; }
 .recognition h2, .projects-section > h2 { margin-bottom: 16px; }
 .recognition-list { list-style: disc; padding-left: 20px; margin: 0; }
