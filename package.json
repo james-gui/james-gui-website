@@ -1,0 +1,10 @@
+{
+  "name": "james-gui-personal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test worker/spotify.test.mjs",
+    "dev": "node scripts/dev.mjs"
+  }
+}
