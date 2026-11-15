@@ -69,9 +69,22 @@ p { margin: 0 0 21px; }
 .location::before { content: ''; display: block; width: 5px; height: 5px; border-radius: 50%; background: #899071; }
 .footer-name { text-decoration: none; }
 .intro { color: var(--muted); margin-bottom: 35px; }
+.home-recognition { margin: 24px 0 0; }
+.home-recognition + .social-links { margin-top: 12px; }
+.recognition { margin-bottom: 40px; scroll-margin-top: 32px; }
+.recognition h2 { margin-bottom: 16px; }
+.recognition-list { list-style: none; padding: 0; margin: 0; }
+.recognition-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; align-items: baseline; padding: 13px 0; border-top: 1px solid var(--line); }
+.recognition-link { display: block; min-width: 0; text-decoration: none; }
+.recognition-event { display: block; font-size: 14px; line-height: 1.6; }
+.recognition-arrow { font-size: 12px; color: var(--muted); margin-left: 3px; }
+.recognition-detail { display: block; font-size: 12px; line-height: 1.7; color: var(--muted); margin-top: 3px; }
+.recognition-result { color: var(--accent); }
+.recognition-row time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.recognition-link:hover .recognition-event { color: var(--accent); }
 
 .project-list { margin: 0; padding: 0; list-style: none; }
-.project { padding: 22px 0 24px; border-top: 1px solid var(--line); }
+.project { padding: 22px 0 24px; border-top: 1px solid var(--line); scroll-margin-top: 28px; }
 .project-top { display: flex; justify-content: space-between; align-items: baseline; gap: 18px; }
 .project h2 { margin: 0; }
 .project h2 a { text-decoration: none; }
@@ -180,6 +193,7 @@ p { margin: 0 0 21px; }
   .page-footer { padding: 38px 27px 25px; font-size: 9px; }
   .now { margin-top: 33px; }
   .project-top { gap: 10px; }
+  .recognition-row { gap: 10px; }
   .project h2 { font-size: 16px; }
   .project p { font-size: inherit; }
   .section-heading { align-items: baseline; }
