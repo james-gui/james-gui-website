@@ -51,6 +51,7 @@ h2, .project h3 { font-size: 16px; font-weight: 500; line-height: 1.5; margin: 0
 p { margin: 0 0 21px; }
 .prose { color: var(--muted); max-width: 636px; }
 .prose strong { color: var(--ink); font-weight: 400; }
+.home-prose > p, .contact-prose > p { text-wrap: balance; }
 .text-link { color: var(--accent); text-decoration: underline; text-decoration-color: #b88870; }
 .text-link:hover { text-decoration-color: currentColor; }
 .social-links { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 15px; margin-top: 27px; }
