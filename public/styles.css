@@ -239,7 +239,7 @@ p { margin: 0 0 21px; }
 
 @media (min-width: 1600px) { main { padding-top: 100px; } }
 @media (max-width: 680px) {
-  body { font-size: 15px; }
+  body { font-size: 15px; line-height: 1.75; }
   .sidebar { width: 56px; padding: 18px 6px; align-items: center; }
   .sidebar-id { padding: 0; }
   .sidebar-name, .nav-index, .sidebar-foot { display: none; }
@@ -250,14 +250,14 @@ p { margin: 0 0 21px; }
   .page-shell { margin-left: 56px; }
   .skip-link { left: 70px; }
   .page-footer .location { display: flex; }
-  main { padding: 46px 27px 0; min-height: calc(100svh - 106px); }
+  main { padding: 40px 22px 0; min-height: calc(100svh - 106px); }
   .page-index { margin-bottom: 23px; font-size: 9px; }
   h1 { font-size: 22px; margin-bottom: 21px; }
   p { margin-bottom: 19px; }
   .social-links { gap: 1px 12px; }
   .bracket-link { font-size: 12px; }
   .basketball { margin-left: 0; width: 21px; height: 21px; }
-  .page-footer { padding: 38px 27px 25px; font-size: 9px; }
+  .page-footer { padding: 34px 22px 25px; font-size: 9px; }
   .now { margin-top: 33px; }
   .project-top { gap: 10px; }
   .project h3 { font-size: 16px; }
@@ -267,5 +267,13 @@ p { margin: 0 0 21px; }
   .album-note { font-size: 11px; }
   .email-row { gap: 8px; }
 }
-@media (max-width: 360px) { main { padding-left: 21px; padding-right: 21px; } .page-footer { padding-left: 21px; padding-right: 21px; } }
+@media (max-width: 360px) { main { padding-left: 18px; padding-right: 18px; } .page-footer { padding-left: 18px; padding-right: 18px; } }
+@media (pointer: coarse) {
+  .bracket-link { min-height: 44px; }
+  .portrait-close, .copy-button { width: 44px; height: 44px; }
+  .city-switch button { min-width: 44px; min-height: 44px; }
+  .portrait-toggle { position: relative; }
+  .portrait-toggle::after { content: ''; position: absolute; inset: -8px -4px; }
+  button, a { touch-action: manipulation; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }

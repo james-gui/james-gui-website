@@ -2,7 +2,9 @@
 (() => {
   const main = document.querySelector('main .home-heading')?.closest('main');
   if (!main) return;
-  const allowed = matchMedia('(min-width: 681px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+  const allowed = matchMedia('(prefers-reduced-motion: no-preference)');
+  const compact = matchMedia('(max-width: 680px), (hover: none), (pointer: coarse)');
+  document.body.classList.add('has-home-buddy');
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const buddy = document.createElement('div');
@@ -39,6 +41,38 @@
   let hoveredLink = null, focusedLink = null, reaction = null;
   const reactionLinks = [...main.querySelectorAll('.home-prose a.text-link')];
   const basketballs = [...main.querySelectorAll('[data-buddy-dunk]')];
+  const mobilePanel = document.createElement('section');
+  mobilePanel.className = 'buddy-mobile-panel';
+  mobilePanel.id = 'buddy-play';
+  mobilePanel.setAttribute('aria-label', 'play with little guy');
+  mobilePanel.hidden = true;
+  mobilePanel.innerHTML = `<div class="buddy-mobile-stage" aria-hidden="true"></div><div class="buddy-mobile-actions">
+    <button type="button" data-mobile-mood="beg" aria-label="make little guy beg for an internship">beg</button>
+    <button type="button" data-mobile-mood="proud" aria-label="make little guy show off">show off</button>
+    <button type="button" data-mobile-dunk>dunk</button>
+    <button type="button" data-mobile-pause aria-label="pause little guy">pause</button>
+  </div>`;
+  const launcher = document.createElement('button');
+  launcher.className = 'buddy-launcher';
+  launcher.type = 'button';
+  launcher.setAttribute('aria-controls', 'buddy-play');
+  launcher.setAttribute('aria-expanded', 'false');
+  launcher.innerHTML = '<svg viewBox="0 0 20 26" aria-hidden="true"><circle cx="10" cy="5" r="3"/><path d="M10 8v8m0-5-6 4m6-4 6-2m-6 7-5 7m5-7 5 7"/></svg><span class="buddy-launcher-label">little guy</span><span class="buddy-chevron" aria-hidden="true">⌃</span>';
+  document.body.append(launcher, mobilePanel);
+  let panelOpen = false, mobileStage = null, mobileMood = null, mobileReactionTimer = 0;
+
+  function setPanel(open) {
+    panelOpen = open;
+    mobileMood = null;
+    clearTimeout(mobileReactionTimer);
+    pointer = null;
+    hoveredLink = focusedLink = null;
+    flight = null;
+    initialized = false;
+    if (!open && mobilePanel.contains(document.activeElement)) launcher.focus({ preventScroll: true });
+    sync();
+    if (open) measure(performance.now());
+  }
   const hint = document.createElement('span');
   hint.className = 'buddy-hint';
   hint.textContent = 'psst… hover blue links or the basketball ↓';
@@ -95,15 +129,18 @@
 
   function startDunk(trigger) {
     if (dunk || !enabled || !allowed.matches || document.hidden) return;
+    if (compact.matches && !panelOpen) setPanel(true);
+    clearTimeout(mobileReactionTimer);
+    mobileMood = null;
     const triggerRect = trigger.getBoundingClientRect();
-    if (triggerRect.bottom < 60 || triggerRect.top > innerHeight - 40) return;
+    if (!compact.matches && (triggerRect.bottom < 60 || triggerRect.top > innerHeight - 40)) return;
     const icon = main.querySelector('.basketball-trigger');
     const iconRect = icon.getBoundingClientRect();
-    const sourceTrigger = iconRect.top > 60 && iconRect.bottom < innerHeight - 40 ? icon : trigger;
+    const sourceTrigger = !compact.matches && iconRect.top > 60 && iconRect.bottom < innerHeight - 40 ? icon : trigger;
     const rect = sourceTrigger.getBoundingClientRect();
-    const source = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    const rimX = clamp(rect.right + 112, bounds.left + 110, bounds.right - 45);
-    const floorY = clamp(rect.bottom + 112, 190, innerHeight - 70);
+    const floorY = compact.matches ? mobileStage.bottom - 24 : clamp(rect.bottom + 112, 190, innerHeight - 70);
+    const source = compact.matches ? { x: mobileStage.left + 38, y: floorY - 24 } : { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    const rimX = compact.matches ? mobileStage.right - 68 : clamp(rect.right + 112, bounds.left + 110, bounds.right - 45);
     const rimY = floorY - 88;
     const pickup = { x: source.x - 13, y: source.y + 24 };
     dunk = { trigger: sourceTrigger, from: { x, y }, pickup, source, rimX, rimY, floorY, start: performance.now(), approach: clamp(distance({ x, y }, pickup) * 1.1 + 280, 440, 850) };
@@ -186,6 +223,18 @@
 
   function refreshReaction() {
     if (dunk) { reaction = null; return; }
+    if (compact.matches) {
+      if (!mobileMood || !mobileStage || !panelOpen) { reaction = null; return; }
+      const footX = mobileStage.left + 55, footY = mobileStage.bottom - 24;
+      reaction = {
+        mode: mobileMood,
+        point: { x: mobileStage.right - 28, y: footY - 32 },
+        destination: { x: footX, y: footY, platform: { id: 'play-stage', left: bounds.left, right: bounds.right, y: footY } },
+      };
+      buddy.dataset.captionSide = 'above';
+      buddy.querySelector('.buddy-plea').textContent = 'pls hire me';
+      return;
+    }
     const link = hoveredLink || focusedLink;
     if (!link) { reaction = null; return; }
     const rects = [...link.getClientRects()].filter(rect => rect.bottom > 55 && rect.top < innerHeight - 40);
@@ -214,6 +263,17 @@
   function measure(now) {
     dirty = false;
     measuredAt = now;
+    if (compact.matches) {
+      if (!panelOpen) return;
+      mobileStage = mobilePanel.querySelector('.buddy-mobile-stage').getBoundingClientRect();
+      bounds = { left: mobileStage.left + 20, right: mobileStage.right - 20 };
+      current = { id: 'play-stage', left: bounds.left, right: bounds.right, y: mobileStage.bottom - 24 };
+      platforms = [current];
+      if (!initialized) { x = mobileStage.left + 55; y = current.y; initialized = true; settledAt = now; }
+      else if (!dunk) { x = clamp(x, bounds.left, bounds.right); y = current.y; }
+      refreshReaction();
+      return;
+    }
     const sidebar = document.querySelector('.sidebar').getBoundingClientRect();
     bounds = { left: sidebar.right + 25, right: innerWidth - 25 };
     platforms = [];
@@ -263,6 +323,7 @@
   }
   function target() {
     if (reaction) return reaction.destination;
+    if (compact.matches) return { x: mobileStage.left + 55, y: mobileStage.bottom - 24, platform: platforms[0] };
     if (!pointer) return { x, y, platform: current };
     const aim = { x: clamp(pointer.x - 28, bounds.left, bounds.right), y: clamp(pointer.y + 35, 55, innerHeight - 40) };
     const destination = pointOn(nearest(aim), aim);
@@ -361,7 +422,9 @@
 
   function tick(now) {
     frame = 0;
-    if (!enabled || !allowed.matches || document.hidden) return;
+    // Stop and restore the scene even if the preference changes mid-frame.
+    if (!allowed.matches) { sync(); return; }
+    if (!enabled || document.hidden || (compact.matches && !panelOpen)) return;
     const dt = Math.min((now - (lastFrame || now)) / 1000, .035);
     lastFrame = now;
     if (dirty && now - measuredAt > 90) measure(now);
@@ -412,20 +475,31 @@
   }
 
   function wake() {
-    if (!frame && enabled && allowed.matches && !document.hidden) frame = requestAnimationFrame(tick);
+    if (!frame && enabled && allowed.matches && !document.hidden && (!compact.matches || panelOpen)) frame = requestAnimationFrame(tick);
   }
   function sync() {
     cancelAnimationFrame(frame);
     frame = 0;
     lastFrame = 0;
     finishDunk();
-    buddy.hidden = !enabled || !allowed.matches;
-    button.hidden = !allowed.matches;
+    buddy.hidden = !enabled || !allowed.matches || (compact.matches && !panelOpen);
+    button.hidden = !allowed.matches || compact.matches;
+    mobilePanel.hidden = !allowed.matches || !compact.matches || !panelOpen;
+    launcher.hidden = !allowed.matches || !compact.matches;
+    launcher.setAttribute('aria-expanded', String(panelOpen));
+    launcher.setAttribute('aria-label', panelOpen ? 'close little guy controls' : 'play with little guy');
+    launcher.querySelector('.buddy-launcher-label').textContent = innerWidth <= 680 ? (panelOpen ? 'close' : 'play') : 'little guy';
+    launcher.querySelector('.buddy-chevron').textContent = panelOpen ? '×' : '⌃';
+    hint.textContent = compact.matches ? (innerWidth <= 680 ? 'tap play for little guy ↓' : 'tap little guy to play ↓') : 'psst… hover blue links or the basketball ↓';
     hint.hidden = !enabled || !allowed.matches || discovered;
     for (const trigger of basketballs) {
       trigger.disabled = !enabled || !allowed.matches;
-      trigger.title = trigger.disabled ? 'basketball' : 'hover or click for a dunk';
+      trigger.title = trigger.disabled ? 'basketball' : compact.matches ? 'tap for a dunk' : 'hover or click for a dunk';
     }
+    mobilePanel.querySelectorAll('[data-mobile-mood], [data-mobile-dunk]').forEach(control => { control.disabled = !enabled; });
+    const pause = mobilePanel.querySelector('[data-mobile-pause]');
+    pause.textContent = enabled ? 'pause' : 'resume';
+    pause.setAttribute('aria-label', enabled ? 'pause little guy' : 'resume little guy');
     button.setAttribute('aria-pressed', String(enabled));
     button.setAttribute('aria-label', enabled ? 'pause little guy' : 'resume little guy');
     button.innerHTML = `${enabled ? '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z"/></svg>' : '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 2 7 4-7 4z"/></svg>'}<span>little guy</span>`;
@@ -437,13 +511,35 @@
     clearTimeout(dunkTimer);
     startDunk(trigger);
   }));
-  button.addEventListener('click', () => {
+  const toggleEnabled = () => {
     enabled = !enabled;
+    mobileMood = null;
+    clearTimeout(mobileReactionTimer);
     try { localStorage.setItem('home-buddy', enabled ? 'on' : 'off'); } catch { /* Storage is optional. */ }
     sync();
+  };
+  button.addEventListener('click', toggleEnabled);
+  mobilePanel.querySelector('[data-mobile-pause]').addEventListener('click', toggleEnabled);
+  launcher.addEventListener('click', () => setPanel(!panelOpen));
+  mobilePanel.querySelectorAll('[data-mobile-mood]').forEach(control => control.addEventListener('click', () => {
+    finishDunk();
+    clearTimeout(mobileReactionTimer);
+    mobileMood = control.dataset.mobileMood;
+    refreshReaction();
+    settledAt = performance.now();
+    discover();
+    wake();
+    mobileReactionTimer = setTimeout(() => { mobileMood = null; refreshReaction(); wake(); }, 3200);
+  }));
+  mobilePanel.querySelector('[data-mobile-dunk]').addEventListener('click', event => startDunk(event.currentTarget));
+  document.addEventListener('pointerdown', event => {
+    if (compact.matches && panelOpen && !event.target.closest('.buddy-mobile-panel, .buddy-launcher, [data-buddy-dunk]')) setPanel(false);
+  }, { passive: true });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && compact.matches && panelOpen) setPanel(false);
   });
   document.addEventListener('pointermove', event => {
-    if (event.pointerType !== 'mouse' || !enabled || !allowed.matches) return;
+    if (compact.matches || event.pointerType !== 'mouse' || !enabled || !allowed.matches) return;
     pointer = { x: event.clientX, y: event.clientY };
     const basketball = event.target.closest('[data-buddy-dunk]');
     if (basketball !== dunkHover) {
@@ -458,12 +554,14 @@
   }, { passive: true });
   document.documentElement.addEventListener('pointerleave', () => { pointer = null; hoveredLink = null; dunkHover = null; clearTimeout(dunkTimer); refreshReaction(); wake(); });
   main.addEventListener('focusin', event => {
+    if (compact.matches) return;
     focusedLink = event.target.matches(':focus-visible') ? event.target.closest('.home-prose a.text-link') : null;
     refreshReaction();
     wake();
   });
   main.addEventListener('focusout', () => { focusedLink = null; refreshReaction(); wake(); });
   addEventListener('scroll', () => {
+    if (compact.matches) { previousScroll = scrollY; return; }
     finishDunk(false);
     const delta = scrollY - previousScroll;
     previousScroll = scrollY;
@@ -474,9 +572,11 @@
   }, { passive: true });
   const observer = new ResizeObserver(() => { dirty = true; wake(); });
   observer.observe(main);
-  addEventListener('resize', () => { finishDunk(false); dirty = true; wake(); });
+  addEventListener('resize', () => { finishDunk(false); dirty = true; if (compact.matches) sync(); else wake(); });
+  window.visualViewport?.addEventListener('resize', () => { if (compact.matches) { finishDunk(false); dirty = true; wake(); } });
   document.fonts.ready.then(() => { dirty = true; wake(); });
   document.addEventListener('visibilitychange', sync);
   allowed.addEventListener('change', sync);
+  compact.addEventListener('change', () => { panelOpen = false; initialized = false; pointer = null; flight = null; hoveredLink = focusedLink = null; sync(); });
   sync();
 })();
