@@ -9,7 +9,7 @@ await mkdir(output, { recursive: true });
 await cp(resolve(root, 'public'), output, { recursive: true });
 
 const versions = {};
-for (const name of ['styles.css', 'site.js']) {
+for (const name of ['styles.css', 'site.js', 'home-buddy.css', 'home-buddy.js']) {
   versions[name] = createHash('sha256').update(await readFile(resolve(output, name))).digest('hex').slice(0, 12);
 }
 const avatarVersion = createHash('sha256').update(await readFile(resolve(output, 'assets/james-avatar.png'))).digest('hex').slice(0, 12);

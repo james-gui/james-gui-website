@@ -1,0 +1,71 @@
+.home-buddy {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 15;
+  width: 38px;
+  height: 47px;
+  pointer-events: none;
+  user-select: none;
+  color: var(--accent);
+  will-change: transform;
+}
+.home-buddy svg { width: 100%; height: 100%; overflow: visible; }
+.buddy-hint { margin-left: auto; font-size: 11px; letter-spacing: 0; text-align: right; color: var(--muted); transition: opacity 500ms; }
+.buddy-hint.is-discovered { opacity: 0; pointer-events: none; }
+.basketball-trigger { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 36px; padding: 0; border: 0; background: none; }
+.basketball-trigger .basketball { margin: 0; transition: transform 180ms, opacity 140ms; }
+.basketball-trigger:enabled:hover .basketball { transform: rotate(12deg) translateY(-2px); }
+.basketball-trigger.is-playing .basketball { opacity: 0; }
+.basketball-word { display: inline; padding: 0; border: 0; background: none; font: inherit; color: inherit; line-height: inherit; }
+.basketball-word:enabled { text-decoration: underline dotted var(--underline); text-underline-offset: 4px; }
+.basketball-word:enabled:hover { color: var(--accent); }
+.basketball-trigger:disabled, .basketball-word:disabled { cursor: default; }
+.buddy-court, .buddy-ball { position: fixed; top: 0; left: 0; pointer-events: none; user-select: none; }
+.buddy-court { z-index: 14; width: 150px; height: 145px; color: var(--accent); }
+.buddy-court svg { width: 100%; height: 100%; overflow: visible; }
+.buddy-court .dunk-score { position: absolute; top: 128px; left: 25px; width: 120px; text-align: center; font-size: 10px; color: var(--muted); opacity: 0; transition: opacity 180ms; }
+.buddy-court.is-scored .dunk-score { opacity: 1; }
+.buddy-ball { z-index: 16; width: 15px; height: 15px; }
+.buddy-ball svg { width: 100%; height: 100%; }
+.buddy-plea {
+  position: absolute;
+  right: calc(100% + 5px);
+  top: 1px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 9px 9px 2px 9px;
+  background: var(--paper);
+  color: var(--accent);
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 160ms, transform 160ms;
+}
+.home-buddy[data-mood='beg'] .buddy-plea { opacity: 1; transform: translateY(0); }
+.home-buddy[data-caption-side='below'] .buddy-plea { right: auto; left: 50%; top: calc(100% + 2px); padding: 2px 5px; font-size: 9px; transform: translate(-50%, 3px); }
+.home-buddy[data-caption-side='below'][data-mood='beg'] .buddy-plea { transform: translate(-50%, 0); }
+.buddy-control {
+  position: fixed;
+  right: 22px;
+  bottom: 18px;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.buddy-control:hover { color: var(--accent); border-color: var(--underline); }
+.buddy-control svg { width: 12px; height: 12px; fill: currentColor; }
+.buddy-control[aria-pressed='false'] { opacity: .7; }
+@media (max-width: 680px), (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .home-buddy, .buddy-control, .buddy-hint, .buddy-court, .buddy-ball { display: none; }
+}

@@ -13,6 +13,7 @@ The editable front end lives in `public/`:
 - `say-hello.html` — email and social links
 - `styles.css` — shared typography, colors, and responsive layouts
 - `site.js` — homepage portrait, city switcher, clock, copy email, and Spotify grid updates
+- `home-buddy.js` / `home-buddy.css` — homepage stick figure, link reactions, and basketball dunk
 - `music-fallback.json` — saved recent listens shown before Spotify is connected
 
 Run `npm run dev` and open http://127.0.0.1:4173. The local preview shows the saved music and does not access production credentials. No dependency installation is needed.
@@ -52,6 +53,8 @@ The original warm palette is saved in `design/palettes/warm.css`. Its declaratio
 `public/assets/james-avatar.png` is the supplied original image. The sidebar and icon derivatives preserve its design.
 
 The homepage name and thumbnail reveal `public/assets/james-portrait.jpg` above the bio. The photo expands inline, supports Enter/Space and Escape, and respects reduced-motion settings. Vercel serves a small thumbnail immediately and requests the responsive larger image only when opened. The portrait preserves the supplied JPEG pixels and orientation, with camera and location metadata removed; CSS controls its framing.
+
+The homepage stick figure follows the mouse and uses text lines as platforms. Hovering or keyboard-focusing the blue prose links triggers a reaction; `data-buddy-reaction="beg"` marks the opportunities link. Hovering or activating either `data-buddy-dunk` button plays the basketball sequence. A small intro hint fades after an interaction and stays dismissed for that browser session. The pause preference persists locally. The companion is disabled on touch layouts and for reduced motion, and sleeps when idle or the tab is hidden. Scrolling, resizing, or pausing cancels a dunk and restores the basketball icon.
 
 ## Connect Spotify
 

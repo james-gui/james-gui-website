@@ -15,7 +15,7 @@ async function collect(dir, prefix = '') {
 await collect(resolve(root, 'public'));
 // HTML revalidates on every visit. Version its styles and scripts as well so
 // a newly deployed page cannot pick up a still-fresh stylesheet from an old build.
-for (const path of ['/styles.css', '/site.js']) {
+for (const path of ['/styles.css', '/site.js', '/home-buddy.css', '/home-buddy.js']) {
   assets[path].version = createHash('sha256').update(Buffer.from(assets[path].body, 'base64')).digest('hex').slice(0, 12);
 }
 for (const asset of Object.values(assets)) {
@@ -23,6 +23,8 @@ for (const asset of Object.values(assets)) {
   let html = Buffer.from(asset.body, 'base64').toString('utf8');
   html = html.replaceAll('href="styles.css"', `href="styles.css?v=${assets['/styles.css'].version}"`);
   html = html.replaceAll('src="site.js"', `src="site.js?v=${assets['/site.js'].version}"`);
+  html = html.replaceAll('href="home-buddy.css"', `href="home-buddy.css?v=${assets['/home-buddy.css'].version}"`);
+  html = html.replaceAll('src="home-buddy.js"', `src="home-buddy.js?v=${assets['/home-buddy.js'].version}"`);
   asset.body = Buffer.from(html).toString('base64');
 }
 const manifest = JSON.parse(await readFile(resolve(root, '.openai/hosting.json'), 'utf8'));
