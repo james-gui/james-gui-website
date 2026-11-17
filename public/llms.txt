@@ -1,0 +1,19 @@
+# James Gui
+
+> Personal portfolio of James Gui, an electrical and computer engineering student at the University of Southern California. James builds AI forecasting agents and works on prediction markets, robotics, and agentic trading.
+
+## Portfolio
+
+- [Homepage](https://jamesgui.com/): Introduction, research interests, and selected achievements.
+- [Experience](https://jamesgui.com/experiences.html): Engineering and quantitative research roles and education.
+- [Projects and recognition](https://jamesgui.com/projects.html): Project summaries and hackathon results, including the award track for each placement.
+- [Contact](https://jamesgui.com/say-hello.html): Research opportunities, internships, and public profiles.
+
+## Research and projects
+
+- [CodexProphet](https://jamesgui.com/codexprophet.html): James Gui and Hanson Wen’s forecasting agent for Kalshi events. Includes the ProphetHacks evaluation and a link to the team write-up.
+- [WorldFork](https://jamesgui.com/worldfork.html): A branching social simulation. Includes James’s contribution, the team repository, and the related forecasting evaluation paper.
+
+## Optional
+
+- [Good things](https://jamesgui.com/good-things.html): Spotify listening picks and favorite restaurants in Hong Kong and Los Angeles.
