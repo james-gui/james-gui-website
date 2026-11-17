@@ -156,6 +156,7 @@ if (musicGrid) {
       }
       const manage = document.querySelector('[data-spotify-manage]');
       if (data.canManage) {
+        manage.href = "/spotify/setup";
         manage.hidden = false;
         manage.textContent = data.needsReconnect ? 'reconnect spotify ↗' : data.connected ? 'spotify settings ↗' : 'connect spotify ↗';
       }
