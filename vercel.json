@@ -3,6 +3,7 @@
   "framework": null,
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist/static",
+  "trailingSlash": false,
   "images": {
     "sizes": [48, 72, 96, 108, 180, 360, 640, 960, 1280],
     "qualities": [75],
@@ -12,16 +13,22 @@
     "formats": ["image/webp"]
   },
   "redirects": [
+    { "source": "/index.html", "destination": "https://jamesgui.com/", "permanent": true },
+    { "source": "/work.html", "destination": "https://jamesgui.com/projects.html", "permanent": true },
+    { "source": "/pins.html", "destination": "https://jamesgui.com/good-things.html", "permanent": true },
+    { "source": "/contact.html", "destination": "https://jamesgui.com/say-hello.html", "permanent": true },
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.jamesgui.com" }],
       "destination": "https://jamesgui.com/:path*",
       "permanent": true
     },
-    { "source": "/index.html", "destination": "/", "permanent": true },
-    { "source": "/work.html", "destination": "/projects.html", "permanent": true },
-    { "source": "/pins.html", "destination": "/good-things.html", "permanent": true },
-    { "source": "/contact.html", "destination": "/say-hello.html", "permanent": true }
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "webssss-inky.vercel.app" }],
+      "destination": "https://jamesgui.com/:path*",
+      "permanent": true
+    }
   ],
   "headers": [
     {
